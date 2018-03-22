@@ -1,0 +1,133 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_above="@+id/bottom"
+		android:background="@color/colorPrimary">
+
+		<TextView
+			android:id="@+id/log"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingLeft="10dp"
+			android:text="Log"
+			android:textSize="14dp"
+			android:textColor="@android:color/holo_green_light"
+			/>
+	</ScrollView>
+
+
+	<LinearLayout
+		android:id="@+id/bottom"
+		android:layout_width="match_parent"
+		android:layout_height="160dp"
+		android:orientation="vertical"
+		android:layout_alignParentBottom="true"
+		>
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:padding="2dp"
+			>
+			<EditText
+				android:id="@+id/nameInput"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:layout_height="match_parent"
+				android:hint="Name"
+				android:text="Philip"
+				android:textSize="13dp"
+				android:gravity="center"
+				/>
+			<EditText
+				android:id="@+id/ageInput"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:layout_height="match_parent"
+				android:hint="Age"
+				android:text="12"
+				android:textSize="13dp"
+				android:inputType="numberDecimal"
+				android:gravity="center"
+				/>
+			<EditText
+				android:id="@+id/phoneInput"
+				android:layout_width="0dp"
+				android:layout_weight="2"
+				android:layout_height="match_parent"
+				android:hint="Phone"
+				android:text="010-1234-1234"
+				android:inputType="number"
+				android:textSize="13dp"
+				/>
+			<Button
+				android:id="@+id/InsertBtn"
+				android:layout_width="0dp"
+				android:layout_weight="2"
+				android:layout_height="match_parent"
+				android:text="Insert Data"
+				android:textSize="12dp"
+				/>
+		</LinearLayout>
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:padding="2dp"
+			>
+			<EditText
+				android:id="@+id/deleteIDInput"
+				android:layout_width="0dp"
+				android:layout_weight="2"
+				android:layout_height="match_parent"
+				android:hint="Data의 ID를 입력"
+				android:text="0"
+				android:textSize="18dp"
+				/>
+			<Button
+				android:id="@+id/deleteBtn"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:layout_height="match_parent"
+				android:width="120dp"
+				android:text="Delete DATA"
+				android:textSize="12dp"
+				/>
+		</LinearLayout>
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:padding="2dp"
+			>
+			<EditText
+				android:id="@+id/searchTableInput"
+				android:layout_width="0dp"
+				android:layout_weight="2"
+				android:layout_height="match_parent"
+				android:hint="테이블 이름을 입력"
+				android:text="DBManager1"
+				android:textSize="18dp"
+				/>
+			<Button
+				android:id="@+id/searchTableBtn"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:layout_height="match_parent"
+				android:width="120dp"
+				android:text="Search Table"
+				android:textSize="12dp"
+				/>
+		</LinearLayout>
+
+	</LinearLayout>
+
+</RelativeLayout>
