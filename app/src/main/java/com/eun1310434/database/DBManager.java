@@ -1,13 +1,52 @@
-/*=====================================================================
-□ Infomation
-  ○ Data : 22.03.2018
+/*==================================================================================================
+□ INFORMATION
+  ○ Data : Dienstag - 05/06/18
   ○ Mail : eun1310434@naver.com
-  ○ Blog : https://blog.naver.com/eun1310434
+  ○ WebPage : https://eun1310434.github.io/
   ○ Reference
      - Do it android app Programming
 
+
 □ Function
-  ○
+   ○ Process
+      01) MainActivity : onCreate() -> DBManager : DBManager()
+                                    -> DBManager : insertRecord()
+                                    -> DBManager : deleteRecordParam()
+                                    -> DBManager : searchTable()
+
+      02) DBManager : DBManager() -> DatabaseHelper : DatabaseHelper()
+          DBManager : insertRecord() -> SQLiteDatabase : execSQL()
+          DBManager : deleteRecordParam() -> SQLiteDatabase : execSQL()
+          DBManager : searchTable() -> SQLiteDatabase : execSQL()
+
+      03) DatabaseHelper : DatabaseHelper() -> DatabaseHelper : onCreate()
+          DatabaseHelper : onCreate() -> DatabaseHelper : CreateTable()
+          DatabaseHelper : CreateTable() -> SQLiteDatabase : execSQL()
+          DatabaseHelper : DeleteTable() -> SQLiteDatabase : execSQL()
+
+
+   ○ Unit
+      - public class MainActivity
+        01) protected void onCreate(Bundle savedInstanceState)
+
+      - public class DBManager
+        01) public interface OnListener
+        02) public DBManager(String _name, Context _context, OnListener _listener)
+        03) public int getVersion()
+        04) public String getPath()
+        05) public void insertRecord(String _tableName, String _userName, int _age, String _phoneNumber)
+        06) public int updateRecordParam_PhoneNumber(String _tableName, String _userName, int _age, String _phoneNumber)
+        07) public int updateRecordParam_Age(String _tableName, String _id, int _age)
+        08) public int deleteRecordParam(String _tableName, String _id)
+        09) public void searchTable(String _tableName)
+
+      - public class DatabaseHelper extends SQLiteOpenHelper
+        01) public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
+        02) public void onCreate(SQLiteDatabase db)
+        03) public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+        04) public void CreateTable(SQLiteDatabase db)
+        05) public void DeleteTable(SQLiteDatabase db, int _newVersion)
+
 
 □ Study
   ○ DataBase
@@ -82,9 +121,7 @@
       02) public abstract void onCreate(SQLiteDatavase db)
       03) public abstract void onOpen(SQLiteDatabase db)
       04) public abstract void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
-
-
-=====================================================================*/
+==================================================================================================*/
 package com.eun1310434.database;
 
 import android.content.ContentValues;
@@ -93,52 +130,57 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class DBManager {
-
-    private String DB_name;
+    private String db_name;
     private SQLiteDatabase db;
     private DatabaseHelper helper;
-
 
     //인터페이스를 활용하여 변경시 연결을 위한 리스너 새로 정의
     //innerClass
     public interface OnListener {
         void printLog(String tag, String msg);
     }
-    OnListener listener;
+    private OnListener listener;
 
     public DBManager(String _name, Context _context, OnListener _listener) {
-        this.DB_name = _name;
+        this.db_name = _name;
         this.listener = _listener;
 
-        //SQLiteOpenHelper를 사용하여 버전관리 하기
-        helper = new DatabaseHelper(_context, DB_name, null, 1); //Version must be >= 1, was 0
-        db = helper.getWritableDatabase();
-
+        //DataBase 생성하기
         /*
-        SQLiteOpenHelper를 사용하지 않고 DB 생성
         db = _context.openOrCreateDatabase(
                 DB_name,
                 Activity.MODE_PRIVATE, // 보안을 위해서 MODE_PRIVATE을 사용할 수 밖에 없음
                 null);
         */
 
+        //SQLiteOpenHelper 사용
+        helper = new DatabaseHelper(
+                _context,
+                db_name,
+                null,
+                1); //Version must be >= 1, was 0
+
+
+        //DB의 Write able 획득
+        db = helper.getWritableDatabase();
 
         if(db != null){
-            listener.printLog("[ "+DB_name+" ]","Start");
+            listener.printLog("[ "+db_name+" ]","Start");
         }else{
-            listener.printLog("[ "+DB_name+" ]","Error");
+            listener.printLog("[ "+db_name+" ]","Error");
         }
     }
 
     public int getVersion(){
         return db.getVersion();
     }
+
     public String getPath(){
         return db.getPath();
     }
 
-
     public void insertRecord(String _tableName, String _userName, int _age, String _phoneNumber) {
+
         //db.execSQL( "insert into " + _tableName + "(name, age, phone) values ('"+_userName+"', "+Integer.toString(_age)+", '"+_phoneNumber+"');" );
 
         Object[] params = {_userName, _age, _phoneNumber};
@@ -146,15 +188,16 @@ public class DBManager {
         db.execSQL(query,params);
 
         listener.printLog(
-                "[ "+DB_name+" ]",
-                "inserting records into table  \n"+_tableName+" ("+ _userName+" | "+Integer.toString(_age)+" | "+_phoneNumber+")");
+                "[ "+db_name+" ]",
+                "inserting records into table  \n"+ _tableName+" ("+ _userName+" | "+Integer.toString(_age)+" | "+_phoneNumber+")");
     }
 
-    //insert records using parameters
     public int insertRecordParam(String _tableName, String _userName, int _age, String _phoneNumber) {
+        //insert records using parameters
         listener.printLog(
-                "[ "+DB_name+" ]",
-                "inserting records using parameters \n"+_tableName+" ("+ _userName+" | "+Integer.toString(_age)+" | "+_phoneNumber+")");
+                "[ "+db_name+" ]",
+                "inserting records using parameters \n"+
+                        _tableName+" ("+ _userName+" | "+Integer.toString(_age)+" | "+_phoneNumber+")");
 
         ContentValues recordValues = new ContentValues();
         recordValues.put("name", _userName);
@@ -164,23 +207,26 @@ public class DBManager {
         return rowPosition;
     }
 
-    //update records using parameters
-    public int updateRecordParam(String _tableName, String _id, int _age) {
+    public int updateRecordParam_Age(String _tableName, String _id, int _age) {
+        //update records using parameters
+        listener.printLog(
+                "[ "+db_name+" ]",
+                "updating records using parameters \n"+
+                        _tableName+" ("+ _id+" | "+Integer.toString(_age)+")");
+
+
         ContentValues recordValues = new ContentValues();
         recordValues.put("age", _age);
         String[] whereArgs = {_id};
 
         int rowAffected = db.update(_tableName,recordValues,"name = ?",whereArgs);
 
-        listener.printLog(
-                "[ "+DB_name+" ]",
-                "updating records using parameters \n"+_tableName+" ("+ _id+" | "+Integer.toString(_age)+")");
 
         return rowAffected;
     }
 
-    //update records using parameters
-    public int updateRecordParam(String _tableName, String _id,  String _phoneNumber) {
+    public int updateRecordParam_PhoneNumber(String _tableName, String _id,  String _phoneNumber) {
+        //update records using parameters
         ContentValues recordValues = new ContentValues();
         recordValues.put("phone", _phoneNumber);
         String[] whereArgs = {_id};
@@ -188,26 +234,27 @@ public class DBManager {
         int rowAffected = db.update(_tableName,recordValues,"name = ?",whereArgs);
 
         listener.printLog(
-                "[ "+DB_name+" ]",
-                "updating records using parameters \n"+_tableName+" ("+ _id+" | "+_phoneNumber+")");
+                "[ "+db_name+" ]",
+                "updating records using parameters \n"+
+                        _tableName+" ("+ _id+" | "+_phoneNumber+")");
         return rowAffected;
     }
 
-    //delete records using parameters
     public int deleteRecordParam(String _tableName, String _id) {
+        //delete records using parameters
+        listener.printLog(
+                "[ "+db_name+" ]",
+                "deleting records using parameters \n"+
+                        _tableName+" ("+ _id+")");
+
         String[] whereArgs = {_id};
 
         int rowAffected = db.delete(_tableName,"_id = ?",whereArgs);
 
-        listener.printLog(
-                "[ "+DB_name+" ]",
-                "deleting records using parameters \n"+_tableName+" ("+ _id+")");
         return rowAffected;
     }
 
-
     public void searchTable(String _tableName){
-
         String query = "select * from "+_tableName+" ;";
         Cursor cursor = db.rawQuery(query,null);
         int _id = -1;
@@ -225,7 +272,7 @@ public class DBManager {
             phone = cursor.getString(3);
             log = log +"   "+_id+" - "+ name +" | " + age + " | " + phone +"\n";
         }
-        listener.printLog("[ "+DB_name+" ]",log);
+        listener.printLog("[ "+db_name+" ]",log);
     }
 
 }

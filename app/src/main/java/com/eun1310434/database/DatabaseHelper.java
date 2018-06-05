@@ -1,13 +1,52 @@
-/*=====================================================================
-□ Infomation
-  ○ Data : 22.03.2018
+/*==================================================================================================
+□ INFORMATION
+  ○ Data : Dienstag - 05/06/18
   ○ Mail : eun1310434@naver.com
-  ○ Blog : https://blog.naver.com/eun1310434
+  ○ WebPage : https://eun1310434.github.io/
   ○ Reference
      - Do it android app Programming
 
+
 □ Function
-  ○
+   ○ Process
+      01) MainActivity : onCreate() -> DBManager : DBManager()
+                                    -> DBManager : insertRecord()
+                                    -> DBManager : deleteRecordParam()
+                                    -> DBManager : searchTable()
+
+      02) DBManager : DBManager() -> DatabaseHelper : DatabaseHelper()
+          DBManager : insertRecord() -> SQLiteDatabase : execSQL()
+          DBManager : deleteRecordParam() -> SQLiteDatabase : execSQL()
+          DBManager : searchTable() -> SQLiteDatabase : execSQL()
+
+      03) DatabaseHelper : DatabaseHelper() -> DatabaseHelper : onCreate()
+          DatabaseHelper : onCreate() -> DatabaseHelper : CreateTable()
+          DatabaseHelper : CreateTable() -> SQLiteDatabase : execSQL()
+          DatabaseHelper : DeleteTable() -> SQLiteDatabase : execSQL()
+
+
+   ○ Unit
+      - public class MainActivity
+        01) protected void onCreate(Bundle savedInstanceState)
+
+      - public class DBManager
+        01) public interface OnListener
+        02) public DBManager(String _name, Context _context, OnListener _listener)
+        03) public int getVersion()
+        04) public String getPath()
+        05) public void insertRecord(String _tableName, String _userName, int _age, String _phoneNumber)
+        06) public int updateRecordParam_PhoneNumber(String _tableName, String _userName, int _age, String _phoneNumber)
+        07) public int updateRecordParam_Age(String _tableName, String _id, int _age)
+        08) public int deleteRecordParam(String _tableName, String _id)
+        09) public void searchTable(String _tableName)
+
+      - public class DatabaseHelper extends SQLiteOpenHelper
+        01) public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
+        02) public void onCreate(SQLiteDatabase db)
+        03) public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+        04) public void CreateTable(SQLiteDatabase db)
+        05) public void DeleteTable(SQLiteDatabase db, int _newVersion)
+
 
 □ Study
   ○ DataBase
@@ -82,46 +121,49 @@
       02) public abstract void onCreate(SQLiteDatavase db)
       03) public abstract void onOpen(SQLiteDatabase db)
       04) public abstract void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
-
-
-=====================================================================*/
+==================================================================================================*/
 package com.eun1310434.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-
+import android.util.Log;
 
 class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
+        Log.d("DatabaseHelper", "DatabaseHelper()");
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d("DatabaseHelper", "onCreate()");
         //DB 설치 시 호출
         CreateTable(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //DB 업데이트 시 호출
+        Log.d("DatabaseHelper", "onUpgrade()");
+        //DB를 변경하기 원할 때 호출됨
 
         if(newVersion == 1){
-            //이전 데이터 정보를 최신 DB에 재 전송후 작업
+            //이전 데이터 정보를 최신 DB에 재 전송 후 작업
+
         }else if(newVersion > 1){
-            //이전 데이터 정보를 최신 DB에 재 전송후 작업
-            DeleteTable(db);
+            //이전 데이터 정보를 최신 DB에 재 전송 후 작업
+            DeleteTable(db, oldVersion);
         }
         CreateTable(db);
     }
 
     public void CreateTable(SQLiteDatabase db){
         int Version = 1;
-        //기본적으로 설치해야 되는것을
-        String query = "create table if not exists DBManager"+Version+" ("
+        //테이브 생성
+        Log.d("DatabaseHelper", "CreateTable()");
+        String query =
+                "create table if not exists DBManager"+Version+" ("
                 + " _id integer PRIMARY KEY autoincrement, "
                 + " name text, "
                 + " age integer, "
@@ -129,9 +171,11 @@ class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
-    public void DeleteTable(SQLiteDatabase db){
-        //기본적으로 설치해야 되는것을
-        String query = "drop table if exists DBManager1";
+    public void DeleteTable(SQLiteDatabase db, int _oldVersion){
+        //테이블 삭제
+        //DBManager_1 , DBManager_2 ,DBManager_3
+        Log.d("DatabaseHelper", "DeleteTable()");
+        String query = "drop table if exists DBManager"+Integer.toString(_oldVersion);
         db.execSQL(query);
     }
 }
