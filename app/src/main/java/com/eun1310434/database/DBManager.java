@@ -47,6 +47,18 @@
         04) public void CreateTable(SQLiteDatabase db)
         05) public void DeleteTable(SQLiteDatabase db, int _newVersion)
 
+  ○ SQLiteOpenHelper
+    - 기능
+      01) 데이터베이스를 만들거나 열기 위해 필요한 일들을 도와주는 역할을 함
+      02) 앱 DB의 업데이트 시 배포되어진 단말기들의 업데이트를 도와줌
+            -> onUpgrade()메소드 호출
+      03) 새롭게 설치하는 사용자에게는 이전의 DB가 아닌 업데이트된 DB를 설치
+            -> onCreate()메소드 호출
+    - 메소드
+      01) public SQLiteOpenHelper (Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
+      02) public abstract void onCreate(SQLiteDatavase db)
+      03) public abstract void onOpen(SQLiteDatabase db)
+      04) public abstract void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 
 □ Study
   ○ DataBase
@@ -109,18 +121,6 @@
     - 레코드를 추가하기 위한 Query
        : INSERT INTO table_name<column list> VALUES (value, ...)
 
-  ○ SQLiteOpenHelper
-    - 기능
-      01) 데이터베이스를 만들거나 열기 위해 필요한 일들을 도와주는 역할을 함
-      02) 앱 DB의 업데이트 시 배포되어진 단말기들의 업데이트를 도와줌
-            -> onUpgrade()메소드 호출
-      03) 새롭게 설치하는 사용자에게는 이전의 DB가 아닌 업데이트된 DB를 설치
-            -> onCreate()메소드 호출
-    - 메소드
-      01) public SQLiteOpenHelper (Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
-      02) public abstract void onCreate(SQLiteDatavase db)
-      03) public abstract void onOpen(SQLiteDatabase db)
-      04) public abstract void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 ==================================================================================================*/
 package com.eun1310434.database;
 
