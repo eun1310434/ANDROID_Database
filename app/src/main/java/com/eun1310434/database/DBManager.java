@@ -30,15 +30,17 @@
         01) protected void onCreate(Bundle savedInstanceState)
 
       - public class DBManager
-        01) public interface OnListener
-        02) public DBManager(String _name, Context _context, OnListener _listener)
-        03) public int getVersion()
-        04) public String getPath()
-        05) public void insertRecord(String _tableName, String _userName, int _age, String _phoneNumber)
-        06) public int updateRecordParam_PhoneNumber(String _tableName, String _userName, int _age, String _phoneNumber)
-        07) public int updateRecordParam_Age(String _tableName, String _id, int _age)
-        08) public int deleteRecordParam(String _tableName, String _id)
-        09) public void searchTable(String _tableName)
+        01) public DBManager(String _name, Context _context, OnListener _listener)
+        02) public int getVersion()
+        03) public String getPath()
+        04) public void insertRecord(String _tableName, String _userName, int _age, String _phoneNumber)
+        05) public int updateRecordParam_PhoneNumber(String _tableName, String _userName, int _age, String _phoneNumber)
+        06) public int updateRecordParam_Age(String _tableName, String _id, int _age)
+        07) public int deleteRecordParam(String _tableName, String _id)
+        08) public void searchTable(String _tableName)
+
+      - public interface  DBManager.OnListener
+        01) public void printLog(String tag, String msg)
 
       - public class DatabaseHelper extends SQLiteOpenHelper
         01) public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
